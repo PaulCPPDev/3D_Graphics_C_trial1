@@ -69,14 +69,19 @@ vec2_t project(vec3_t point){
 }
 
 void update(void){
+	cube_rotation.x += 0.015;
 	cube_rotation.y += 0.015;
+	cube_rotation.z += 0.015;
+
 
 
 	for(int i = 0; i <N_POINTS; i++) {
 		vec3_t point = cube_points[i];
 		
 		//transform the points
-		vec3_t transformed_point = vec3_rotate_y(point, cube_rotation.y);
+		vec3_t transformed_point = vec3_rotate_x(point, cube_rotation.x);
+		transformed_point = vec3_rotate_y(transformed_point, cube_rotation.y);
+		transformed_point = vec3_rotate_z(transformed_point, cube_rotation.z);
 
 		// Update the position of the points(vectors) according to the camera pos
 		transformed_point.z -= camera_position.z;
