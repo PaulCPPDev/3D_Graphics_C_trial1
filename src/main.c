@@ -10,6 +10,7 @@ vec3_t cube_points[N_POINTS];
 vec2_t  projected_points[N_POINTS];
 
 vec3_t camera_position = {.x= 0, .y = 0, .z = -5};
+vec3_t cube_rotation = {.x = 0, .y = 0, .z = 0};
 
 float fov_factor = 640;
 
@@ -68,15 +69,20 @@ vec2_t project(vec3_t point){
 }
 
 void update(void){
+	cube_rotation.y += 0.015;
+
 
 	for(int i = 0; i <N_POINTS; i++) {
 		vec3_t point = cube_points[i];
+		
+		//transform the points
+		vec3_t transformed_point = vec3_rotate_y(point, cube_rotation.y);
 
 		// Update the position of the points(vectors) according to the camera pos
-		point.z -= camera_position.z;
+		transformed_point.z -= camera_position.z;
 
 		// project each point in the array
-		vec2_t projected_point = project(point);
+		vec2_t projected_point = project(transformed_point);
 
 		// add all the projected points to the array of projected points
 		projected_points[i] = projected_point;
