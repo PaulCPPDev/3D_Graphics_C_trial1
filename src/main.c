@@ -70,8 +70,13 @@ vec2_t project(vec3_t point){
 void update(void){
 
 	for(int i = 0; i <N_POINTS; i++) {
+		vec3_t point = cube_points[i];
+
+		// Update the position of the points(vectors) according to the camera pos
+		point.z -= camera_position.z;
+
 		// project each point in the array
-		vec2_t projected_point = project(cube_points[i]);
+		vec2_t projected_point = project(point);
 
 		// add all the projected points to the array of projected points
 		projected_points[i] = projected_point;
