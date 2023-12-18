@@ -94,8 +94,9 @@ void update(void){
 		transformed_point = vec3_rotate_y(transformed_point, cube_rotation.y);
 		transformed_point = vec3_rotate_z(transformed_point, cube_rotation.z);
 
+
 		// Update the position of the points(vectors) according to the camera pos
-		transformed_point.z -= camera_position.z;
+		 transformed_point.z -= camera_position.z;
 
 		// project each point in the array
 		vec2_t projected_point = project(transformed_point);
