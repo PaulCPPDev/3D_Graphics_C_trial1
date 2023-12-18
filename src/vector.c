@@ -32,4 +32,3 @@ vec3_t vec3_rotate_x(vec3_t v, float angle){
 	return rotated_vector;
 
 }
-
