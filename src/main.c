@@ -18,7 +18,7 @@ triangle_t* triangles_to_render = NULL;
 bool is_running = false;
 int previous_frame_time = 0;
 
-vec3_t camera_position = { 0, 0, 0 };
+vec3_t camera_position = { .x = 0, .y = 0, .z = 0 };
 float fov_factor = 640;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ void update(void) {
 
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.02;
+    mesh.rotation.z += 0.01;
 
     // Loop all triangle faces of our mesh
     int num_faces = array_length(mesh.faces);
@@ -111,7 +111,7 @@ void update(void) {
             transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
             transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
 
-            // Translate the vertices away from the camera
+            // Translate the vertex away from the camera
             transformed_vertex.z += 5;
 
             // Save transformed vertex in the array of transformed vertices
@@ -174,12 +174,20 @@ void render(void) {
     for (int i = 0; i < num_triangles; i++) {
         triangle_t triangle = triangles_to_render[i];
 
+        // Draw filled triangle
+        draw_filled_triangle(
+            triangle.points[0].x, triangle.points[0].y, // vertex A
+            triangle.points[1].x, triangle.points[1].y, // vertex B
+            triangle.points[2].x, triangle.points[2].y, // vertex C
+            0xFFFFFFFF
+        );
+
         // Draw unfilled triangle
         draw_triangle(
             triangle.points[0].x, triangle.points[0].y, // vertex A
             triangle.points[1].x, triangle.points[1].y, // vertex B
             triangle.points[2].x, triangle.points[2].y, // vertex C
-            0xFF00FF00
+            0xFF000000
         );
     }
 
