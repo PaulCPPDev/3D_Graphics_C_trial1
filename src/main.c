@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "../include/display.h"
 #include "../include/vector.h"
+#include "../include/camera.h"
 
 #define FPS 60
 #define FRAME_TARGET_TIME (1000/FPS)
@@ -16,8 +17,8 @@ int previous_frame_time = 0;
 #define N_POINTS (9 * 9 * 9)
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
-float fov_factor = 128;
-
+float fov_factor = 640;
+vec3_t cube_rotation = {0,0,0};
 
 
 vec2_t orthographic_project(vec3_t v){
@@ -40,6 +41,13 @@ vec2_t perspective_project(vec3_t v){
 void setup(){
 	// Initialize SDL
 	is_running = init_window();
+
+	//initialize the camera
+	vec3_t camera_position = {0,0,-5};
+	vec3_t camera_direction = {0,0,1};
+	init_camera(camera_position, camera_direction);
+
+
 	
 	// initialize cube values
 	int point_count = 0;
@@ -76,12 +84,25 @@ void update(){
 	if( time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME)
 		SDL_Delay(time_to_wait);
 	previous_frame_time = SDL_GetTicks();
+	
+	// rotate the cube
+	cube_rotation.y += 0.01;
 
 	// loop through every point in the cube array
 	for(int i = 0; i < N_POINTS; i++){
 		vec3_t point = cube_points[i];
+
+		// Transform the points (Scale, Rotate, Translate)
+		// Rotate
+		vec3_t transformed_point = vec3_rotate_x(point, cube_rotation.x);
+        	transformed_point = vec3_rotate_y(transformed_point, cube_rotation.y);
+        	transformed_point = vec3_rotate_z(transformed_point, cube_rotation.z);
+		// Translate to camera
+		transformed_point.z -= get_camera_position().z;
 		
-		vec2_t projected_point = perspective_project(point);
+
+		// Project transformed points
+		vec2_t projected_point = perspective_project(transformed_point);
 		projected_points[i] = projected_point;
 	}
 }
