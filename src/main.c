@@ -3,8 +3,12 @@
 #include <stdbool.h>
 #include "../include/display.h"
 
+#define FPS 60
+#define FRAME_TARGET_TIME (1000/FPS)
+
 // Global Variables
 bool is_running = false;
+int previous_frame_time = 0;
 
 
 void setup(){
@@ -29,6 +33,11 @@ void process_input(){
 }
 
 void update(){
+	// fix the time step
+	int time_to_wait = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_time);
+	if( time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME)
+		SDL_Delay(time_to_wait);
+	previous_frame_time = SDL_GetTicks();
 }
 
 void render(){
