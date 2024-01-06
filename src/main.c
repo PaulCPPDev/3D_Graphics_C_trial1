@@ -28,6 +28,14 @@ vec2_t orthographic_project(vec3_t v){
 	return projected_vector;
 }
 
+vec2_t perspective_project(vec3_t v){
+        vec2_t projected_vector = {
+                .x = (fov_factor * v.x)/v.z,
+                .y = (fov_factor * v.y)/v.z
+        };
+        return projected_vector;
+}
+
 
 void setup(){
 	// Initialize SDL
@@ -73,7 +81,7 @@ void update(){
 	for(int i = 0; i < N_POINTS; i++){
 		vec3_t point = cube_points[i];
 		
-		vec2_t projected_point = orthographic_project(point);
+		vec2_t projected_point = perspective_project(point);
 		projected_points[i] = projected_point;
 	}
 }

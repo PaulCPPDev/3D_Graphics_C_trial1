@@ -6,7 +6,7 @@
 //////////////  VEC2 //////////////////
 ///////////////////////////////////////
 
-vec2_t new_vec2(float x, float y){
+vec2_t vec2_new(float x, float y){
 	vec2_t new_vector = { .x = x, .y = y  };
 	return new_vector;
 }
@@ -42,7 +42,7 @@ void vec2_normalize(vec2_t* v){
 //////////////  VEC3 //////////////////
 ///////////////////////////////////////
 
-vec3_t new_vec3(float x, float y, float z){
+vec3_t vec3_new(float x, float y, float z){
 	vec3_t new_vector = { .x = x, .y = y, .z = z  };
         return new_vector;
 }
