@@ -24,11 +24,26 @@ void clear_color_buffer(uint32_t color){
 		color_buffer[i] = color;
 }
 
+int get_window_width(void) {
+    return window_width;
+}
+
+int get_window_height(void) {
+    return window_height;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// DRAWING /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void draw_grid(void) {
+    for (int y = 0; y < window_height; y += 10) {
+        for (int x = 0; x < window_width; x += 10) {
+            color_buffer[(window_width * y) + x] = 0xFF444444;
+        }
+    }
+}
 
 void draw_pixel(int x, int y, uint32_t color){
 	if(x >= 0 && x < window_width && y >= 0 && y < window_height)

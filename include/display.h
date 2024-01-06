@@ -14,6 +14,9 @@ void draw_rect(int x, int y, int width, int height, uint32_t color);
 bool init_window(void);
 void destroy_window(void);
 
+int get_window_width(void) ;
+int get_window_height(void);
+void draw_grid(void);
 
 
 #endif
