@@ -8,8 +8,11 @@
 void render_color_buffer(void);
 void clear_color_buffer(uint32_t color);
 
+void draw_pixel(int x, int y, uint32_t color);
+void draw_rect(int x, int y, int width, int height, uint32_t color);
+
 bool init_window(void);
-void free_resources(void);
+void destroy_window(void);
 
 
 

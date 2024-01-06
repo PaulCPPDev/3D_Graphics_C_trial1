@@ -25,60 +25,78 @@ void clear_color_buffer(uint32_t color){
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// DRAWING /////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void draw_pixel(int x, int y, uint32_t color){
+	if(x >= 0 && x < window_width && y >= 0 && y < window_height)
+		color_buffer[(window_width*y)+x] = color;
+}
+
+void draw_rect(int x, int y, int width, int height, uint32_t color){
+	for (int i = 0; i< width; i++){
+		for (int j = 0; j< height; j++){
+			int current_x = x + i;
+			int current_y = y + j;
+			draw_pixel(current_x, current_y, color);
+		}
+	}
+} 
+
+
 bool init_window(void){
 	// Initialize everything in the SDL window
-	if(SDL_Init(SDL_INIT_EVERYTHING)==0){
-		// Set width and height of SDL window to max Screen Resolution
-		SDL_DisplayMode display_mode;
-    		SDL_GetCurrentDisplayMode(0, &display_mode);
-    		window_width = display_mode.w;
-    		window_height = display_mode.h;
-
-		// create window
-		window = SDL_CreateWindow(
-				NULL,
-				SDL_WINDOWPOS_CENTERED,
-				SDL_WINDOWPOS_CENTERED,
-				window_width,
-				window_height,
-				SDL_WINDOW_SHOWN // Borderless does not work yet
-				);
-		if(window == NULL){
-			printf("Error Initializing SDL_Window\nerro = %s\n", SDL_GetError());
-			return false;
-		}
-		
-		// create renderer
-		renderer = SDL_CreateRenderer(window, -1, 0);
-		if(renderer==NULL){
-			printf("Error Initializing SDL_Renderer\nerro = %s\n", SDL_GetError());
-			return false;
-		}
-
-		// initialize the color buffer
-		color_buffer = (uint32_t*) malloc( sizeof(uint32_t) * window_width * window_height );
-
-		// color buffer texture
-		color_buffer_texture = SDL_CreateTexture(
-					renderer, 
-					SDL_PIXELFORMAT_RGBA32, 
-					SDL_TEXTUREACCESS_STREAMING,
-					window_width,
-					window_height
-					);
-		
-		return true;
-	}
-	else{
-		printf("Error Initializing SDL\nerror = %s\n", SDL_GetError());
+	if(SDL_Init(SDL_INIT_EVERYTHING)!=0){
+		fprintf(stderr, "Error Initializing SDL.\n");
 		return false;
 	}
+
+	// Set width and height of SDL window to max Screen Resolution
+	SDL_DisplayMode display_mode;
+    	SDL_GetCurrentDisplayMode(0, &display_mode);
+    	window_width = display_mode.w;
+    	window_height = display_mode.h;
+
+	// create window
+	window = SDL_CreateWindow(
+			NULL,
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			window_width,
+			window_height,
+			SDL_WINDOW_BORDERLESS // Borderless does not work yet
+			);
+	if(window == NULL){
+		printf("Error Initializing SDL_Window\nerro = %s\n", SDL_GetError());
+		return false;
+	}
+		
+	// create renderer
+	renderer = SDL_CreateRenderer(window, -1, 0);
+	if(renderer==NULL){
+		printf("Error Initializing SDL_Renderer\nerro = %s\n", SDL_GetError());
+		return false;
+	}
+
+	// initialize the color buffer
+	color_buffer = (uint32_t*) malloc( sizeof(uint32_t) * window_width * window_height );
+
+	// color buffer texture
+	color_buffer_texture = SDL_CreateTexture(
+				renderer, 
+				SDL_PIXELFORMAT_RGBA32, 
+				SDL_TEXTUREACCESS_STREAMING,
+				window_width,
+				window_height
+			);
+
+	return true;
 }
 
 
-void free_resources(void){
-	free(color_buffer_texture);
-
+void destroy_window(void){
 	free(color_buffer);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
