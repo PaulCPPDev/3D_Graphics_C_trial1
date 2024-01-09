@@ -6,6 +6,7 @@
 #include "../include/camera.h"
 #include "../include/mesh.h"
 #include "../include/triangle.h"
+#include "../include/array.h"
 
 #define FPS 60
 #define FRAME_TARGET_TIME (1000/FPS)
@@ -19,7 +20,7 @@ int previous_frame_time = 0;
 #define N_POINTS (9 * 9 * 9)
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
-triangle_t triangles_to_render[N_MESH_FACES];
+triangle_t* triangles_to_render = NULL;
 
 float fov_factor = 640;
 vec3_t cube_rotation = {0,0,0};
@@ -107,6 +108,8 @@ void update(){
 		SDL_Delay(time_to_wait);
 	previous_frame_time = SDL_GetTicks();
 	
+	// clear the array of triangles to render
+	triangles_to_render = NULL;
 
 	cube_rotation.x += 0.01;
 
@@ -143,7 +146,8 @@ void update(){
         		}
 
         	// Save the projected triangle in the array of triangles to render
-        	triangles_to_render[i] = projected_triangle;
+        	// triangles_to_render[i] = projected_triangle;
+		array_push(triangles_to_render, projected_triangle);
     	}
 
 
@@ -179,7 +183,11 @@ void render(){
 
 
 	// Loop all projected triangles and render them
-    	for (int i = 0; i < N_MESH_FACES; i++) {
+	//
+	// Get the number of triangles to render
+	int num_triangles = array_length(triangles_to_render);
+	// loop
+    	for (int i = 0; i < num_triangles; i++) {
         	triangle_t triangle = triangles_to_render[i];
         	draw_rect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFFFFFF00);
         	draw_rect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFFFFFF00);
