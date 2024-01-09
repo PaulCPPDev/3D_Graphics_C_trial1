@@ -70,7 +70,8 @@ void setup(){
 	vec3_t camera_direction = {0,0,1};
 	init_camera(camera_position, camera_direction);
 
-	load_cube_mesh_data();
+	// load_cube_mesh_data();
+	load_obj_file_data("./assets/f22.obj");
 	
 	// initialize cube values
 	int point_count = 0;
@@ -221,6 +222,7 @@ void render(){
 	// draw_line(100, 200, 300, 50, 0xFFFF00FF);
 	// draw_filled_triangle(100, 100, 300, 200, 50, 400, 0xFFFF00FF);
 	// draw_rect(100,100, 200, 100, 0xFFFF00FF);
+	array_free(triangles_to_render);
 	render_color_buffer();
 }
 
