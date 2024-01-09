@@ -23,20 +23,20 @@ vec2_t projected_points[N_POINTS];
 triangle_t* triangles_to_render = NULL;
 
 float fov_factor = 640;
-vec3_t cube_rotation = {0,0,0};
+// vec3_t cube_rotation = {0,0,0};
 
 
 
 /////////////////////////////////////////////////////////////////
 //////////////// MESH.H ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-
+/*
 #define N_CUBE_VERTICES 8
 #define N_CUBE_FACES (6 * 2) // 6 cube faces, 2 triangles per face
 
 vec3_t cube_vertices[N_CUBE_VERTICES];
 face_t cube_faces[N_CUBE_FACES];
-mesh_t mesh;
+mesh_t mesh;*/
 
 
 
@@ -70,7 +70,7 @@ void setup(){
 	vec3_t camera_direction = {0,0,1};
 	init_camera(camera_position, camera_direction);
 
-
+	load_cube_mesh_data();
 	
 	// initialize cube values
 	int point_count = 0;
@@ -111,16 +111,17 @@ void update(){
 	// clear the array of triangles to render
 	triangles_to_render = NULL;
 
-	cube_rotation.x += 0.01;
+	mesh.rotation.x += 0.01;
 
 	// Loop all triangle faces of our mesh
-    	for (int i = 0; i < N_MESH_FACES; i++) {
-        	face_t mesh_face = mesh_faces[i];
+	int num_faces = array_length(mesh.faces);
+    	for (int i = 0; i < num_faces; i++) {
+        	face_t mesh_face = mesh.faces[i];
 	
         	vec3_t face_vertices[3];
-        	face_vertices[0] = mesh_vertices[mesh_face.a - 1];
-       		face_vertices[1] = mesh_vertices[mesh_face.b - 1];
-        	face_vertices[2] = mesh_vertices[mesh_face.c - 1];
+        	face_vertices[0] = mesh.vertices[mesh_face.a - 1];
+       		face_vertices[1] = mesh.vertices[mesh_face.b - 1];
+        	face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
         	triangle_t projected_triangle;
 
@@ -128,9 +129,9 @@ void update(){
         	for (int j = 0; j < 3; j++) {
             		vec3_t transformed_vertex = face_vertices[j];
 
-            		transformed_vertex = vec3_rotate_x(transformed_vertex, cube_rotation.x);
-            		transformed_vertex = vec3_rotate_y(transformed_vertex, cube_rotation.y);
-            		transformed_vertex = vec3_rotate_z(transformed_vertex, cube_rotation.z);
+            		transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
+            		transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
+            		transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
 
             		// Translate the vertex away from the camera
             		transformed_vertex.z -= get_camera_position().z;
