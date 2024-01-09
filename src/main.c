@@ -4,6 +4,8 @@
 #include "../include/display.h"
 #include "../include/vector.h"
 #include "../include/camera.h"
+#include "../include/mesh.h"
+#include "../include/triangle.h"
 
 #define FPS 60
 #define FRAME_TARGET_TIME (1000/FPS)
@@ -19,6 +21,24 @@ vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
 float fov_factor = 640;
 vec3_t cube_rotation = {0,0,0};
+
+
+
+/////////////////////////////////////////////////////////////////
+//////////////// MESH.H ////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+#define N_CUBE_VERTICES 8
+#define N_CUBE_FACES (6 * 2) // 6 cube faces, 2 triangles per face
+
+vec3_t cube_vertices[N_CUBE_VERTICES];
+face_t cube_faces[N_CUBE_FACES];
+mesh_t mesh;
+
+
+
+
+
 
 
 vec2_t orthographic_project(vec3_t v){
@@ -86,10 +106,10 @@ void update(){
 	previous_frame_time = SDL_GetTicks();
 	
 	// rotate the cube
-	cube_rotation.y += 0.01;
+	// cube_rotation.y += 0.01;
 
 	// loop through every point in the cube array
-	for(int i = 0; i < N_POINTS; i++){
+	/*for(int i = 0; i < N_POINTS; i++){
 		vec3_t point = cube_points[i];
 
 		// Transform the points (Scale, Rotate, Translate)
@@ -104,7 +124,7 @@ void update(){
 		// Project transformed points
 		vec2_t projected_point = perspective_project(transformed_point);
 		projected_points[i] = projected_point;
-	}
+	}*/
 }
 
 void render(){
@@ -112,7 +132,7 @@ void render(){
 	clear_color_buffer(0xFF000000);
 	draw_grid(); 
 	// loop all projected points and render them
-	for (int i = 0; i< N_POINTS; i++){
+	/*for (int i = 0; i< N_POINTS; i++){
 		vec2_t projected_point = projected_points[i];
 		draw_rect(
 			projected_point.x + (get_window_width()/2),
@@ -121,11 +141,13 @@ void render(){
 			4,
 			0xFFFFFF00	
 				);
-	}
+	}*/
+	
 
-	//clear_color_buffer(0xFF000000);
+	// draw_line(100, 200, 300, 50, 0xFFFF00FF);
 
-	//draw_rect(100,100, 200, 100, 0xFFFF00FF);
+	draw_filled_triangle(100, 100, 300, 200, 50, 400, 0xFFFF00FF);
+	// draw_rect(100,100, 200, 100, 0xFFFF00FF);
 	render_color_buffer();
 }
 

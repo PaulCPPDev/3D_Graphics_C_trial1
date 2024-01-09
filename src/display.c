@@ -1,4 +1,5 @@
 #include "../include/display.h"
+#include <math.h>
 
 
 static SDL_Window* window = NULL;
@@ -59,6 +60,39 @@ void draw_rect(int x, int y, int width, int height, uint32_t color){
 		}
 	}
 } 
+
+
+void draw_line(int x0, int y0, int x1, int y1,  uint32_t color){
+	// DDA line drawing algorithm
+	//
+	// calculate rise and run
+	int dx = (x1 - x0);
+	int dy = (y1 - y0);
+	//
+	// get the steps
+	int steps = fmax( abs(dx), abs(dy)  );
+	
+	//
+	// calculate x and y increments
+	float xIncrement = dx / (float)steps;
+	float yIncrement = dy / (float)steps;
+	//
+	// starting position
+	float x_current = x0;
+	float y_current = y0;
+
+	// loop every point and draw it
+	for(int i = 0; i<= steps; i++){
+		draw_pixel(round(x_current), round(y_current), color);
+		x_current += xIncrement;
+		y_current += yIncrement;
+	}
+
+}
+
+
+
+
 
 
 bool init_window(void){
