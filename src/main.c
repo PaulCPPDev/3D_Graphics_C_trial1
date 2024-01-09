@@ -19,6 +19,8 @@ int previous_frame_time = 0;
 #define N_POINTS (9 * 9 * 9)
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
+triangle_t triangles_to_render[N_MESH_FACES];
+
 float fov_factor = 640;
 vec3_t cube_rotation = {0,0,0};
 
@@ -105,10 +107,52 @@ void update(){
 		SDL_Delay(time_to_wait);
 	previous_frame_time = SDL_GetTicks();
 	
+
+	cube_rotation.x += 0.01;
+
+	// Loop all triangle faces of our mesh
+    	for (int i = 0; i < N_MESH_FACES; i++) {
+        	face_t mesh_face = mesh_faces[i];
+	
+        	vec3_t face_vertices[3];
+        	face_vertices[0] = mesh_vertices[mesh_face.a - 1];
+       		face_vertices[1] = mesh_vertices[mesh_face.b - 1];
+        	face_vertices[2] = mesh_vertices[mesh_face.c - 1];
+
+        	triangle_t projected_triangle;
+
+        	// Loop all three vertices of this current face and apply transformations
+        	for (int j = 0; j < 3; j++) {
+            		vec3_t transformed_vertex = face_vertices[j];
+
+            		transformed_vertex = vec3_rotate_x(transformed_vertex, cube_rotation.x);
+            		transformed_vertex = vec3_rotate_y(transformed_vertex, cube_rotation.y);
+            		transformed_vertex = vec3_rotate_z(transformed_vertex, cube_rotation.z);
+
+            		// Translate the vertex away from the camera
+            		transformed_vertex.z -= get_camera_position().z;
+
+            		// Project the current vertex
+            		vec2_t projected_point = perspective_project(transformed_vertex);
+
+            		// Scale and translate the projected points to the middle of the screen
+            		projected_point.x += (get_window_width() / 2);
+            		projected_point.y += (get_window_height() / 2);
+
+            		projected_triangle.points[j] = projected_point;
+        		}
+
+        	// Save the projected triangle in the array of triangles to render
+        	triangles_to_render[i] = projected_triangle;
+    	}
+
+
+	// loop through every triangle 
+
 	// rotate the cube
 	// cube_rotation.y += 0.01;
 
-	// loop through every point in the cube array
+	//1  loop through every point in the cube array
 	/*for(int i = 0; i < N_POINTS; i++){
 		vec3_t point = cube_points[i];
 
@@ -131,6 +175,21 @@ void render(){
 	
 	clear_color_buffer(0xFF000000);
 	draw_grid(); 
+
+
+
+	// Loop all projected triangles and render them
+    	for (int i = 0; i < N_MESH_FACES; i++) {
+        	triangle_t triangle = triangles_to_render[i];
+        	draw_rect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFFFFFF00);
+        	draw_rect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFFFFFF00);
+        	draw_rect(triangle.points[2].x, triangle.points[2].y, 3, 3, 0xFFFFFF00);
+    	}
+
+
+
+
+
 	// loop all projected points and render them
 	/*for (int i = 0; i< N_POINTS; i++){
 		vec2_t projected_point = projected_points[i];
@@ -143,10 +202,8 @@ void render(){
 				);
 	}*/
 	
-
 	// draw_line(100, 200, 300, 50, 0xFFFF00FF);
-
-	draw_filled_triangle(100, 100, 300, 200, 50, 400, 0xFFFF00FF);
+	// draw_filled_triangle(100, 100, 300, 200, 50, 400, 0xFFFF00FF);
 	// draw_rect(100,100, 200, 100, 0xFFFF00FF);
 	render_color_buffer();
 }
